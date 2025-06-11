@@ -14,10 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Shield, Menu, X, User, Settings, LogOut, Bell } from "lucide-react";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // This would come from your auth context
+
+  const router = useRouter();
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -26,6 +30,17 @@ export function Header() {
       setIsLoggedIn(false);
     }
   }, []);
+
+  const handleLogout = () => {
+    if (localStorage.getItem("token")) {
+      localStorage.removeItem("token");
+      setIsLoggedIn(false);
+      toast.success("Logged out successfully.");
+      router.push("/");
+    } else {
+      toast.error("You are not logged in. Please log in to continue.");
+    }
+  };
 
   const navigation = [
     { name: "Targets", href: "/targets" },
@@ -109,10 +124,7 @@ export function Header() {
                     <DropdownMenuItem>
                       <button
                         className="flex items-center w-full text-left"
-                        onClick={() => {
-                          localStorage.removeItem("token");
-                          setIsLoggedIn(false);
-                        }}
+                        onClick={() => handleLogout()}
                       >
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Log out</span>

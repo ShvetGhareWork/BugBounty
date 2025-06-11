@@ -5,6 +5,7 @@ import {
   login,
   requestPasswordReset,
   resetPassword,
+  getUserDetails,
 } from "../controllers/authController.js";
 import { validateSignup } from "../middlewares/validateSignup.js";
 
@@ -15,6 +16,7 @@ router.post("/signup", validateSignup, signup);
 router.post("/login", login);
 router.post("/password-reset", requestPasswordReset);
 router.post("/reset-password/:userId/:token", resetPassword);
+router.get("/user-details", getUserDetails);
 
 // Google OAuth
 router.get(

@@ -142,6 +142,7 @@
     "whatwg-url": "^11.0.0"
   },
   "scripts": {
+    "build": "echo 'No build step needed'",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },

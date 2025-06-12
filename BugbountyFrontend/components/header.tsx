@@ -24,8 +24,6 @@ export function Header() {
   const [email, setemail] = useState("");
   const router = useRouter();
 
-  const router = useRouter();
-
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setIsLoggedIn(true);
@@ -34,7 +32,6 @@ export function Header() {
     }
   }, []);
 
-<<<<<<< HEAD
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
@@ -59,8 +56,6 @@ export function Header() {
     fetchUser();
   }, []);
 
-=======
->>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
   const handleLogout = () => {
     if (localStorage.getItem("token")) {
       localStorage.removeItem("token");

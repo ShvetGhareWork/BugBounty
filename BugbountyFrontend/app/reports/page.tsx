@@ -143,12 +143,18 @@ export default function ReportsPage() {
     e.preventDefault();
 
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found. User not authenticated.");
+        return;
+      }
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/reports`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // ✅ this was missing
           },
           body: JSON.stringify({
             targetApplication,
@@ -208,7 +214,11 @@ export default function ReportsPage() {
     const fetchMyReports = async () => {
       try {
         const token = localStorage.getItem("token");
-        // console.log("Fetching reports with token:", token);
+        if (!token) {
+          console.error("No token found — user not logged in.");
+          return;
+        }
+
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/reports/my-reports`,
           {
@@ -225,14 +235,14 @@ export default function ReportsPage() {
         }
 
         const data = await response.json();
-        setMyReports(data.createdBy); // or setReports(data)
-        console.log(data);
+        setMyReports(data); // ✅ it's an array
+        console.log("Fetched my reports:", data);
+
+        // Optional: Count
+        console.log("Total reports:", data.length);
       } catch (error) {
         console.error("Error fetching your reports:", error);
       }
-      // Removed count calculation as data is not an array
-
-      // If you want to calculate points based on Myreports, use:
     };
 
     fetchMyReports();
@@ -550,7 +560,7 @@ export default function ReportsPage() {
         {/* Reports List */}
         <div className="space-y-4">
           {filteredReports.map((data) => (
-            <Card key={data.id} className="hover:shadow-md transition-shadow">
+            <Card key={data._id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
@@ -575,7 +585,7 @@ export default function ReportsPage() {
                     <div className="flex items-center gap-6 text-sm text-gray-500">
                       <div className="flex items-center gap-1">
                         <User className="w-4 h-4" />
-                        <span>@{Myreports}</span>
+                        <span>@{Myreports.length}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />

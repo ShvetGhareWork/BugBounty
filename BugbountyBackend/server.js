@@ -49,20 +49,13 @@ import authRoutes from "./routes/authRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import cors from "cors";
 import http from "http";
-import { Server as SocketIO } from "socket.io";
+// import { Server as SocketIO } from "socket.io";
 
 dotenv.config();
 connectDB();
 
 const app = express();
 const server = http.createServer(app);
-const io = new SocketIO(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  },
-});
 
 app.use(express.json());
 app.use(
@@ -75,25 +68,6 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
-
-// Active users set
-const activeUsers = new Set();
-
-// Socket.io connection tracking
-io.on("connection", (socket) => {
-  const userId = socket.handshake.query.userId;
-  if (userId) {
-    activeUsers.add(userId);
-    console.log(`User ${userId} connected`);
-  }
-
-  socket.on("disconnect", () => {
-    if (userId) {
-      activeUsers.delete(userId);
-      console.log(`User ${userId} disconnected`);
-    }
-  });
-});
 
 // Endpoint to get currently active users
 app.get("/api/active-users", (req, res) => {

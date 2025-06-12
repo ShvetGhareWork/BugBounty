@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -48,6 +48,8 @@ import {
   MessageSquare,
   Save,
   X,
+  ShieldCheck,
+  Zap,
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -77,12 +79,131 @@ export default function ProfilePage() {
   });
 
   const [editData, setEditData] = useState({ ...profileData });
+  const [name, setName] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+  const [lastName, setLastName] = useState<string | null>(null);
+  const [data, setData] = useState({
+    firstname: "",
+    lastname: "",
+    username: "",
+    email: "",
+  });
+  const [Myreports, setMyReports] = useState<Report[]>([]);
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("Name");
+    const storedEmail = localStorage.getItem("Email");
+    const storedUsername = localStorage.getItem("Username");
+    const storedLastName = localStorage.getItem("LastName");
+
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/user-details`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+      setData(data);
+      console.log(data);
+    };
+
+    if (storedName) setName(storedName);
+    if (storedEmail) setEmail(storedEmail);
+    if (storedUsername) setUsername(storedUsername);
+    if (storedLastName) setLastName(storedLastName);
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    const fetchMyReports = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        // console.log("Fetching reports with token:", token);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/reports/my-reports`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch your reports");
+        }
+
+        const data = await response.json();
+        setMyReports(data); // or setReports(data)
+        console.log(data);
+
+        const count = data.length;
+        let points = count * 5;
+
+        // Bonus milestones
+        if (count >= 50) {
+          points += 40;
+        } else if (count >= 20) {
+          points += 30;
+        } else if (count >= 10) {
+          points += 20;
+        } else if (count >= 5) {
+          points += 10;
+        }
+        setTotalPoints(points);
+      } catch (error) {
+        console.error("Error fetching your reports:", error);
+      }
+      // Removed count calculation as data is not an array
+
+      // If you want to calculate points based on Myreports, use:
+    };
+
+    fetchMyReports();
+  }, []);
+
+  type Report = {
+    _id: string;
+    vulnerabilityTitle: string;
+    severity: string;
+    status: string;
+    createdAt: string;
+    targetApplication: string; // Add this line
+    // Add other properties as needed
+  };
+
+  const [Reports, setReports] = useState<Report[]>([]);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/reports`
+      );
+      const data = await response.json();
+      setReports(data);
+      const count = data.length;
+      // console.log("Fetched reports", data);
+      localStorage.setItem("ReportCount", data.length.toString());
+    };
+
+    fetchReports();
+  }, []);
 
   const handleSave = () => {
     setProfileData({ ...editData });
     setIsEditing(false);
     // Here you would make an API call to update the profile
-    console.log("Saving profile data:", editData);
+    // console.log("Saving profile data:", editData);
   };
 
   const handleCancel = () => {
@@ -90,103 +211,66 @@ export default function ProfilePage() {
     setIsEditing(false);
   };
 
-  // Mock report history data
-  const reportHistory = [
-    {
-      id: "VR-2024-015",
-      title: "SQL Injection in User Search",
-      target: "OWASP Juice Shop",
-      severity: "High",
-      status: "Resolved",
-      submittedAt: "2024-01-10T14:30:00Z",
-      reward: 500,
-      comments: 5,
-      views: 67,
-    },
-    {
-      id: "VR-2024-012",
-      title: "XSS in Profile Comments",
-      target: "DVWA",
-      severity: "Medium",
-      status: "Under Review",
-      submittedAt: "2024-01-08T09:15:00Z",
-      reward: 250,
-      comments: 3,
-      views: 34,
-    },
-    {
-      id: "VR-2024-009",
-      title: "CSRF in Password Change",
-      target: "WebGoat",
-      severity: "Medium",
-      status: "Resolved",
-      submittedAt: "2024-01-05T16:45:00Z",
-      reward: 300,
-      comments: 8,
-      views: 89,
-    },
-    {
-      id: "VR-2024-006",
-      title: "Information Disclosure in API",
-      target: "API Security Challenge",
-      severity: "Low",
-      status: "Rejected",
-      submittedAt: "2024-01-03T11:20:00Z",
-      reward: 0,
-      comments: 2,
-      views: 23,
-    },
-    {
-      id: "VR-2024-003",
-      title: "Remote Code Execution via Upload",
-      target: "VulnHub Challenge",
-      severity: "Critical",
-      status: "Resolved",
-      submittedAt: "2024-01-01T13:10:00Z",
-      reward: 1000,
-      comments: 15,
-      views: 234,
-    },
-  ];
+  // Achievements data
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [reportCount, setReportCount] = useState(0);
 
-  const achievements = [
-    {
-      name: "First Blood",
-      description: "First vulnerability report",
-      icon: "🩸",
-      earned: true,
-    },
-    {
-      name: "Bug Crusher",
-      description: "10 resolved reports",
-      icon: "🐛",
-      earned: true,
-    },
-    {
-      name: "Critical Finder",
-      description: "Found a critical vulnerability",
-      icon: "🔥",
-      earned: true,
-    },
-    {
-      name: "Streak Master",
-      description: "30-day reporting streak",
-      icon: "⚡",
-      earned: false,
-    },
-    {
-      name: "Elite Hunter",
-      description: "100 resolved reports",
-      icon: "👑",
-      earned: false,
-    },
-    {
-      name: "Community Helper",
-      description: "Helped 50+ other hunters",
-      icon: "🤝",
-      earned: true,
-    },
-  ];
+  type Achievement = {
+    milestone: number;
+    name: string;
+    icon: JSX.Element;
+    description: string;
+    earned: boolean;
+  };
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  useEffect(() => {
+    // Example: get report count from localStorage or fetch from API
+    const counts = parseInt(localStorage.getItem("ReportCount") || "0");
+    const count = Reports.length;
+    // console.log("Report count:", count);
+
+    setReportCount(counts);
+
+    const milestoneAchievements = [
+      {
+        milestone: 5,
+        name: "First 5 Reports",
+        icon: <Bug />,
+        description:
+          "You've submitted your first 5 vulnerabilities — a great start to your bug bounty journey!",
+      },
+      {
+        milestone: 10,
+        name: "Top 10 Hunter",
+        icon: <ShieldCheck />,
+        description:
+          "10 reports submitted! You're making waves in the security community.",
+      },
+      {
+        milestone: 20,
+        name: "Security Pro",
+        icon: <Award />,
+        description:
+          "20 reports in — you're officially a skilled vulnerability hunter.",
+      },
+      {
+        milestone: 50,
+        name: "Elite Researcher",
+        icon: <Zap />,
+        description:
+          "50 confirmed reports! You're among the elite security researchers.",
+      },
+    ];
+
+    const unlocked = milestoneAchievements.map((a) => ({
+      ...a,
+      earned: Myreports.length >= a.milestone,
+    }));
+
+    setAchievements(unlocked);
+  }, [Reports]);
+
+  // Mock report history data
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -362,9 +446,7 @@ export default function ProfilePage() {
                         }
                       />
                     ) : (
-                      <p className="mt-1 text-gray-900">
-                        {profileData.firstName}
-                      </p>
+                      <p className="mt-1 text-gray-900">{data.firstname}</p>
                     )}
                   </div>
 
@@ -379,9 +461,7 @@ export default function ProfilePage() {
                         }
                       />
                     ) : (
-                      <p className="mt-1 text-gray-900">
-                        {profileData.lastName}
-                      </p>
+                      <p className="mt-1 text-gray-900">{data.lastname}</p>
                     )}
                   </div>
 
@@ -396,9 +476,7 @@ export default function ProfilePage() {
                         }
                       />
                     ) : (
-                      <p className="mt-1 text-gray-900">
-                        @{profileData.username}
-                      </p>
+                      <p className="mt-1 text-gray-900">@{data.username}</p>
                     )}
                   </div>
 
@@ -406,7 +484,7 @@ export default function ProfilePage() {
                     <Label htmlFor="email">Email</Label>
                     <div className="flex items-center gap-2 mt-1">
                       <Mail className="w-4 h-4 text-gray-400" />
-                      <p className="text-gray-600">{profileData.email}</p>
+                      <p className="text-gray-600">{data.email}</p>
                       <Badge variant="secondary" className="text-xs">
                         Cannot be changed
                       </Badge>
@@ -550,7 +628,7 @@ export default function ProfilePage() {
                 <CardContent className="p-6 text-center">
                   <Trophy className="w-8 h-8 text-yellow-600 mx-auto mb-3" />
                   <div className="text-3xl font-bold text-gray-900">
-                    {profileData.totalPoints.toLocaleString()}
+                    {totalPoints}
                   </div>
                   <div className="text-gray-600">Total Points</div>
                 </CardContent>
@@ -560,7 +638,7 @@ export default function ProfilePage() {
                 <CardContent className="p-6 text-center">
                   <Bug className="w-8 h-8 text-red-600 mx-auto mb-3" />
                   <div className="text-3xl font-bold text-gray-900">
-                    {profileData.reportsSubmitted}
+                    {Myreports.length}
                   </div>
                   <div className="text-gray-600">Reports Submitted</div>
                 </CardContent>
@@ -660,16 +738,16 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {reportHistory.map((report) => (
+                  {Myreports.map((report) => (
                     <div
-                      key={report.id}
+                      key={report._id}
                       className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <h3 className="font-semibold text-gray-900">
-                              {report.title}
+                              {report.vulnerabilityTitle}
                             </h3>
                             <Badge
                               className={getSeverityColor(report.severity)}
@@ -678,32 +756,32 @@ export default function ProfilePage() {
                             </Badge>
                             <Badge className={getStatusColor(report.status)}>
                               <div className="flex items-center gap-1">
-                                {getStatusIcon(report.status)}
-                                {report.status}
+                                {/* {getStatusIcon(report.status)} */}
+                                {/* {report.status} */}
                               </div>
                             </Badge>
                           </div>
                           <div className="flex items-center gap-4 text-sm text-gray-600">
-                            <span>Target: {report.target}</span>
+                            <span>Target: {report.targetApplication}</span>
                             <span>•</span>
-                            <span>{formatDate(report.submittedAt)}</span>
+                            <span>{formatDate(report.createdAt)}</span>
                             <span>•</span>
                             <div className="flex items-center gap-1">
                               <MessageSquare className="w-4 h-4" />
-                              <span>{report.comments}</span>
+                              <span>7</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Eye className="w-4 h-4" />
-                              <span>{report.views}</span>
+                              <span>45</span>
                             </div>
                           </div>
                         </div>
                         <div className="text-right">
                           <div className="text-lg font-bold text-green-600">
-                            ${report.reward}
+                            $2000
                           </div>
                           <div className="text-xs text-gray-500">
-                            {report.id}
+                            {report._id}
                           </div>
                         </div>
                       </div>
@@ -723,26 +801,34 @@ export default function ProfilePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {achievements.map((achievement, index) => (
                     <div
                       key={index}
-                      className={`p-4 rounded-lg border ${
+                      className={`p-6 rounded-2xl border shadow-sm transition-all duration-300 ${
                         achievement.earned
-                          ? "bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200"
-                          : "bg-gray-50 border-gray-200 opacity-60"
+                          ? "bg-gradient-to-br from-indigo-50 to-blue-50 border-blue-300 hover:shadow-lg"
+                          : "bg-gray-50 border-gray-200 opacity-70 hover:opacity-100 hover:shadow"
                       }`}
                     >
-                      <div className="text-center">
-                        <div className="text-3xl mb-2">{achievement.icon}</div>
-                        <h3 className="font-semibold text-gray-900 mb-1">
+                      <div className="flex flex-col items-center text-center space-y-3">
+                        <div
+                          className={`text-4xl ${
+                            achievement.earned
+                              ? "text-indigo-600"
+                              : "text-gray-400"
+                          }`}
+                        >
+                          {achievement.icon}
+                        </div>
+                        <h3 className="font-bold text-lg text-gray-900">
                           {achievement.name}
                         </h3>
                         <p className="text-sm text-gray-600">
                           {achievement.description}
                         </p>
                         {achievement.earned && (
-                          <Badge className="mt-2 bg-green-100 text-green-800">
+                          <Badge className="mt-1 bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs">
                             Earned
                           </Badge>
                         )}

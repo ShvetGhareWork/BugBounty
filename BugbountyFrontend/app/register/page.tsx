@@ -48,7 +48,7 @@ export default function RegisterPage() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/signup`,
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/signup`,
         {
           method: "POST",
           headers: {
@@ -70,7 +70,15 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success(data.message); // or show a toast / dialog instead
+        toast.success(data.message);
+        localStorage.setItem("Name", formData.firstName);
+        localStorage.setItem("Email", formData.email);
+        localStorage.setItem("Username", formData.username);
+        localStorage.setItem("LastName", formData.lastName);
+
+        // Optionally store token if provided
+
+        // or show a toast / dialog instead
         // Optionally redirect to login or verification info page
         // router.push("/login");
       } else {

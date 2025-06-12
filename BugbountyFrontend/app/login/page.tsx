@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -24,6 +24,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [name, setname] = useState("");
 
   const router = useRouter();
 
@@ -31,16 +32,19 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -70,6 +74,29 @@ export default function LoginPage() {
       toast.error("An error occurred while logging in.");
     }
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/user-details`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+      setname(data.firstname + " " + data.lastname);
+      localStorage.setItem("name", data.firstname + " " + data.lastname);
+      console.log(data);
+    };
+    fetchUser();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">

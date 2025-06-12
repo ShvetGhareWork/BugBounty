@@ -14,10 +14,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Shield, Menu, X, User, Settings, LogOut, Bell } from "lucide-react";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // This would come from your auth context
+  const [name, setname] = useState("");
+  const [email, setemail] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -26,6 +31,41 @@ export function Header() {
       setIsLoggedIn(false);
     }
   }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/user-details`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+      // setData(data);
+      setname(data.firstname + " " + data.lastname);
+      setemail(data.email);
+      // console.log(data);
+    };
+    fetchUser();
+  }, []);
+
+  const handleLogout = () => {
+    if (localStorage.getItem("token")) {
+      localStorage.removeItem("token");
+      setIsLoggedIn(false);
+      toast.success("Logged out successfully.");
+      router.push("/");
+    } else {
+      toast.error("You are not logged in. Please log in to continue.");
+    }
+  };
 
   const navigation = [
     { name: "Targets", href: "/targets" },
@@ -85,10 +125,10 @@ export function Header() {
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          john_doe
+                          {name}
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
-                          john@example.com
+                          {email}
                         </p>
                       </div>
                     </DropdownMenuLabel>
@@ -109,10 +149,7 @@ export function Header() {
                     <DropdownMenuItem>
                       <button
                         className="flex items-center w-full text-left"
-                        onClick={() => {
-                          localStorage.removeItem("token");
-                          setIsLoggedIn(false);
-                        }}
+                        onClick={() => handleLogout()}
                       >
                         <LogOut className="mr-2 h-4 w-4" />
                         <span>Log out</span>

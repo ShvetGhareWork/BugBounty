@@ -89,8 +89,11 @@ export default function ProfilePage() {
     username: "",
     email: "",
   });
+<<<<<<< HEAD
   const [Myreports, setMyReports] = useState<Report[]>([]);
 
+=======
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
   useEffect(() => {
     const storedName = localStorage.getItem("Name");
     const storedEmail = localStorage.getItem("Email");
@@ -123,6 +126,7 @@ export default function ProfilePage() {
     fetchUser();
   }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchMyReports = async () => {
       try {
@@ -172,6 +176,8 @@ export default function ProfilePage() {
     fetchMyReports();
   }, []);
 
+=======
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
   type Report = {
     _id: string;
     vulnerabilityTitle: string;
@@ -192,8 +198,27 @@ export default function ProfilePage() {
       const data = await response.json();
       setReports(data);
       const count = data.length;
+<<<<<<< HEAD
       // console.log("Fetched reports", data);
       localStorage.setItem("ReportCount", data.length.toString());
+=======
+      console.log("Fetched reports", data);
+      localStorage.setItem("ReportCount", data.length.toString());
+
+      let points = count * 5;
+
+      // Bonus milestones
+      if (count >= 50) {
+        points += 40;
+      } else if (count >= 20) {
+        points += 30;
+      } else if (count >= 10) {
+        points += 20;
+      } else if (count >= 5) {
+        points += 10;
+      }
+      setTotalPoints(points);
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
     };
 
     fetchReports();
@@ -227,7 +252,11 @@ export default function ProfilePage() {
     // Example: get report count from localStorage or fetch from API
     const counts = parseInt(localStorage.getItem("ReportCount") || "0");
     const count = Reports.length;
+<<<<<<< HEAD
     // console.log("Report count:", count);
+=======
+    console.log("Report count:", count);
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
 
     setReportCount(counts);
 
@@ -264,7 +293,11 @@ export default function ProfilePage() {
 
     const unlocked = milestoneAchievements.map((a) => ({
       ...a,
+<<<<<<< HEAD
       earned: Myreports.length >= a.milestone,
+=======
+      earned: reportCount >= a.milestone,
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
     }));
 
     setAchievements(unlocked);
@@ -638,7 +671,11 @@ export default function ProfilePage() {
                 <CardContent className="p-6 text-center">
                   <Bug className="w-8 h-8 text-red-600 mx-auto mb-3" />
                   <div className="text-3xl font-bold text-gray-900">
+<<<<<<< HEAD
                     {Myreports.length}
+=======
+                    {Reports.length}
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
                   </div>
                   <div className="text-gray-600">Reports Submitted</div>
                 </CardContent>
@@ -738,7 +775,11 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+<<<<<<< HEAD
                   {Myreports.map((report) => (
+=======
+                  {Reports.map((report) => (
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
                     <div
                       key={report._id}
                       className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"

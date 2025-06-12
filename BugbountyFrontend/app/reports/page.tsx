@@ -117,7 +117,10 @@ export default function ReportsPage() {
   const [impactAssessment, setImpactAssessment] = useState("");
   type Report = {
     id: string;
+<<<<<<< HEAD
     _id?: string;
+=======
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
     title: string;
     description: string;
     severity: string;
@@ -137,21 +140,30 @@ export default function ReportsPage() {
   };
 
   const [Reports, setReports] = useState<Report[]>([]);
+<<<<<<< HEAD
   const [Myreports, setMyReports] = useState("");
+=======
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
+<<<<<<< HEAD
       const token = localStorage.getItem("token");
 
+=======
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/reports`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+<<<<<<< HEAD
             authorization: `Bearer ${token}`,
+=======
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
           },
           body: JSON.stringify({
             targetApplication,
@@ -201,11 +213,16 @@ export default function ReportsPage() {
       );
       const data = await response.json();
       setReports(data);
+<<<<<<< HEAD
       // console.log("Fetched reports", data);
+=======
+      console.log("Fetched reports", data);
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
     };
 
     fetchReports();
   }, []);
+<<<<<<< HEAD
 
   useEffect(() => {
     const fetchMyReports = async () => {
@@ -240,6 +257,8 @@ export default function ReportsPage() {
 
     fetchMyReports();
   }, []);
+=======
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -578,11 +597,19 @@ export default function ReportsPage() {
                     <div className="flex items-center gap-6 text-sm text-gray-500">
                       <div className="flex items-center gap-1">
                         <User className="w-4 h-4" />
+<<<<<<< HEAD
                         <span>@{Myreports}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
                         <span>{formatDate(data.createdAt || "")}</span>
+=======
+                        <span>@{currentUser?.username}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        <span>{formatDate(data.createdAt)}</span>
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
                       </div>
                       <div className="flex items-center gap-1">
                         <span className="font-medium">Target:</span>
@@ -607,8 +634,12 @@ export default function ReportsPage() {
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="text-sm text-gray-600">
+<<<<<<< HEAD
                     Report ID:{" "}
                     <span className="font-mono">{data._id || ""}</span>
+=======
+                    Report ID: <span className="font-mono">{data._id}</span>
+>>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
                   </div>
                   <Button variant="outline" size="sm">
                     <Eye className="w-4 h-4 mr-2" />

@@ -58,9 +58,13 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://bugbounty-9z22.onrender.com", // replace with your actual frontend deployed URL
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

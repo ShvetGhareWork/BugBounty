@@ -74,14 +74,11 @@ const reportSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-<<<<<<< HEAD
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User", // assuming your user model is named "User"
     required: true,
   },
-=======
->>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
   createdAt: {
     type: Date,
     default: Date.now,

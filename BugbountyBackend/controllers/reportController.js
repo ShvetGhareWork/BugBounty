@@ -1,6 +1,5 @@
 import Report from "../models/report.js";
 
-<<<<<<< HEAD
 export const createReport = async (req, res) => {
   try {
     const report = new Report({
@@ -14,14 +13,6 @@ export const createReport = async (req, res) => {
       message: "Report created successfully",
       report,
     });
-=======
-// 📌 Create a new report
-export const createReport = async (req, res) => {
-  try {
-    const report = new Report(req.body);
-    await report.save();
-    res.status(201).json({ message: "Report created successfully", report });
->>>>>>> f06922b262f824c4896a327fb6f1858af27175ce
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -78,7 +69,6 @@ export const deleteReport = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-<<<<<<< HEAD
 
 export const getMyReports = async (req, res) => {
   try {
@@ -88,5 +78,3 @@ export const getMyReports = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch reports", error });
   }
 };
-=======
->>>>>>> f06922b262f824c4896a327fb6f1858af27175ce

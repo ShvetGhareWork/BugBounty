@@ -61,10 +61,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://bugbounty-9z22.onrender.com", // replace with your actual frontend deployed URL
-    ],
+    origin: ["http://localhost:3000", "https://bug-bounty-frontend.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

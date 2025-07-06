@@ -47,6 +47,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
+import testRoutes from "./routes/testRoutes.js";
 import cors from "cors";
 import http from "http";
 // import { Server as SocketIO } from "socket.io";
@@ -69,6 +70,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/test", testRoutes);
 
 // Endpoint to get currently active users
 app.get("/api/active-users", (req, res) => {

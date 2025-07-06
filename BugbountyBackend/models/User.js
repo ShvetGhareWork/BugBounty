@@ -9,6 +9,11 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     githubId: { type: String, default: null },
     googleId: { type: String, default: null },
+    bio: { type: String, default: "", required: true },
+    location: { type: String, default: "", required: true },
+    portfolio: { type: String, default: "", required: true },
+    github: { type: String, default: "", required: true },
+    twitter: { type: String, default: "", required: true },
   },
   { timestamps: true }
 );

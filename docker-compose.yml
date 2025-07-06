@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  server:
+    build: ./BugbountyBackend
+    container_name: bugbounty-server
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb+srv://shvetgharework:1234567890@charge.srhyo0k.mongodb.net/?retryWrites=true&w=majority&appName=Charge
+
+  client:
+    build: ./BugbountyFrontend
+    container_name: bugbounty-client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    environment:
+      - NODE_ENV=production
+
+volumes:
+  mongo-data:

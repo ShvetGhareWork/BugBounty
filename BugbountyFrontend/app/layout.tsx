@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "BugBounty Platform - Ethical Hacking & Security Research",
   description:
     "A secure environment for ethical hackers to practice their skills and contribute to cybersecurity research.",
-  generator: "v0.dev",
+  generator: "Shvet",
 };
 
 export default function RootLayout({

@@ -50,6 +50,7 @@ import {
   X,
   ShieldCheck,
   Zap,
+  User,
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -88,6 +89,11 @@ export default function ProfilePage() {
     lastname: "",
     username: "",
     email: "",
+    bio: "",
+    location: "",
+    twitter: "",
+    github: "",
+    portfolio: "",
   });
   const [Myreports, setMyReports] = useState<Report[]>([]);
 
@@ -339,56 +345,14 @@ export default function ProfilePage() {
               <div className="flex flex-col items-center">
                 <div className="relative">
                   <Avatar className="w-32 h-32">
-                    <AvatarImage
-                      src={profileData.profileImage || "/placeholder.svg"}
-                      alt={profileData.username}
-                    />
-                    <AvatarFallback className="text-2xl">
-                      {profileData.firstName[0]}
-                      {profileData.lastName[0]}
-                    </AvatarFallback>
+                    <User />
                   </Avatar>
-                  <Dialog
-                    open={isImageDialogOpen}
-                    onOpenChange={setIsImageDialogOpen}
-                  >
-                    <DialogTrigger asChild>
-                      <Button
-                        size="icon"
-                        className="absolute -bottom-2 -right-2 rounded-full w-8 h-8"
-                        variant="secondary"
-                      >
-                        <Camera className="w-4 h-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Update Profile Picture</DialogTitle>
-                        <DialogDescription>
-                          Upload a new profile picture or choose from gallery
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <Button className="w-full">Upload New Image</Button>
-                        <Button variant="outline" className="w-full">
-                          Choose from Gallery
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="w-full"
-                          onClick={() => setIsImageDialogOpen(false)}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
                 </div>
                 <div className="text-center mt-4">
                   <h1 className="text-2xl font-bold text-gray-900">
-                    {profileData.firstName} {profileData.lastName}
+                    {data.firstname} {data.lastname}
                   </h1>
-                  <p className="text-gray-600">@{profileData.username}</p>
+                  <p className="text-gray-600">@{data.username}</p>
                   <div className="flex items-center justify-center gap-2 mt-2">
                     <Trophy className="w-4 h-4 text-yellow-600" />
                     <span className="text-sm font-medium">
@@ -503,7 +467,7 @@ export default function ProfilePage() {
                         rows={3}
                       />
                     ) : (
-                      <p className="mt-1 text-gray-900">{profileData.bio}</p>
+                      <p className="mt-1 text-gray-900">{data.bio}</p>
                     )}
                   </div>
 
@@ -521,13 +485,13 @@ export default function ProfilePage() {
                     ) : (
                       <div className="flex items-center gap-2 mt-1">
                         <MapPin className="w-4 h-4 text-gray-400" />
-                        <p className="text-gray-900">{profileData.location}</p>
+                        <p className="text-gray-900">{data.location}</p>
                       </div>
                     )}
                   </div>
 
                   <div>
-                    <Label htmlFor="website">Website</Label>
+                    <Label htmlFor="website">Portfolio</Label>
                     {isEditing ? (
                       <Input
                         id="website"
@@ -541,10 +505,10 @@ export default function ProfilePage() {
                       <div className="flex items-center gap-2 mt-1">
                         <LinkIcon className="w-4 h-4 text-gray-400" />
                         <a
-                          href={profileData.website}
+                          href={data.portfolio}
                           className="text-blue-600 hover:underline"
                         >
-                          {profileData.website}
+                          {data.portfolio}
                         </a>
                       </div>
                     )}
@@ -565,10 +529,10 @@ export default function ProfilePage() {
                       <div className="flex items-center gap-2 mt-1">
                         <Github className="w-4 h-4 text-gray-400" />
                         <a
-                          href={`https://github.com/${profileData.github}`}
+                          href={`https://github.com/${data.github}`}
                           className="text-blue-600 hover:underline"
                         >
-                          @{profileData.github}
+                          @{data.github}
                         </a>
                       </div>
                     )}
@@ -589,10 +553,10 @@ export default function ProfilePage() {
                       <div className="flex items-center gap-2 mt-1">
                         <Twitter className="w-4 h-4 text-gray-400" />
                         <a
-                          href={`https://twitter.com/${profileData.twitter}`}
+                          href={`https://twitter.com/${data.twitter}`}
                           className="text-blue-600 hover:underline"
                         >
-                          @{profileData.twitter}
+                          @{data.twitter}
                         </a>
                       </div>
                     )}

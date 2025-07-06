@@ -70,6 +70,7 @@ export function Header() {
   const navigation = [
     { name: "Targets", href: "/targets" },
     { name: "Reports", href: "/reports" },
+    { name: "Exams", href: "/exams" },
     { name: "Leaderboard", href: "/leaderboard" },
     { name: "Documentation", href: "/docs" },
   ];

@@ -154,6 +154,11 @@ export const signup = async (req, res) => {
     password,
     subscribeNewsletter,
     agreedToTerms,
+    bio,
+    location,
+    portfolio,
+    github,
+    twitter,
   } = req.body;
 
   try {
@@ -171,6 +176,11 @@ export const signup = async (req, res) => {
       password: hashedPassword,
       agreedToTerms: agreedToTerms ?? true, // Default true if not provided
       subscribeNewsletter: subscribeNewsletter ?? true,
+      bio,
+      location,
+      portfolio,
+      github,
+      twitter,
     });
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
@@ -183,6 +193,8 @@ export const signup = async (req, res) => {
       token,
     });
   } catch (err) {
+    console.error("Signup error:", err); // Add this!
+
     res.status(500).json({ message: "Signup failed", error: err.message });
   }
 };
